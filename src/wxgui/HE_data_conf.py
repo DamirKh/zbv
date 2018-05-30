@@ -12,10 +12,12 @@ from MyExceptions import BadUserError
 
 from glade_gui.data_conf import MyFrame, MyDialog, \
     MyDialogRunningMean, MyDownsampleDlg, \
-    MyDialogRunningMeancentered, MyDialogFakeData
+    MyDialogRunningMeancentered, MyDialogFakeData, datashow_dialog
 from constants import *
 import data_reader
 from BusyFrame import BusyFrame
+#from dxdfgui import ScatterPlot
+from dxdfgui import MainFrame
 
 # DATA = data_reader.ScadaDataFile()
 TAG_column = 0
@@ -91,6 +93,11 @@ class HEMyDialogRMC(MyDialogRunningMeancentered):
         if ostatok:
             self.spin_ctrl_windowsize.SetValue(entered_window_size - ostatok)
         event.Skip()
+
+
+class HEdatashow_dialog(datashow_dialog):
+    def __init__(self, parent, df, **kwargs):
+        super().__init__(df, **kwargs)
 
 
 class HEMyFrame(MyFrame, BusyFrame):
@@ -316,8 +323,15 @@ class HEMyFrame(MyFrame, BusyFrame):
         self.Layout()
         self.busy_cursor = None
 
-    def on_show_btn(self, event):
+    def on_show_btn_old(self, event):
         self.DATA.show_me_data(self.get_selected_tags())
+
+    def on_show_btn(self, e):
+        # datadlg = HEdatashow_dialog(self, self.DATA.data)
+        # datadlg.Layout()
+        # datadlg.ShowModal()
+        frame = MainFrame(self.DATA.data)
+        frame.Show()
 
     def on_fillna_btn(self, event):
         self.DATA.fill_na_data()
