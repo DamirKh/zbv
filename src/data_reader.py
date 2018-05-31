@@ -16,6 +16,7 @@ import h5py  # HDF5 support
 from config_case import NORMALISE_DICT
 from constants import HIDDEN_DATA
 from MyExceptions import BadUserError
+# from scipy import interpolate
 
 __ver__ = 1.1
 # ScadaDataFile.config добавлено хранение списка скрытых наборов fake данных.
@@ -173,6 +174,13 @@ class ScadaDataFile(object):
         # filling missing data backward
         self.data.fillna(method='bfill', inplace=True)
         self.ss_filled = True
+
+    def interpolate(self, tag, method):
+        if tag[-1] == '=':  # последний символ "=" означает не генерировть деривативы от этого тега
+            raise BadUserError("Use real tag!", tag)
+        deriv_tag_name = '%s#INTER' % tag
+        inter = self.data[tag].interpolate(method)
+        self.data[deriv_tag_name] = inter
 
     @property
     def tags_list(self):

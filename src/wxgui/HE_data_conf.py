@@ -6,13 +6,14 @@ import os.path
 import datetime
 import logging
 import tables
+from collections import OrderedDict
 
 from constants import *
 from MyExceptions import BadUserError
 
 from glade_gui.data_conf import MyFrame, MyDialog, \
     MyDialogRunningMean, MyDownsampleDlg, \
-    MyDialogRunningMeancentered, MyDialogFakeData, datashow_dialog
+    MyDialogRunningMeancentered, MyDialogFakeData, FillDialog
 from constants import *
 import data_reader
 from BusyFrame import BusyFrame
@@ -28,6 +29,44 @@ NaN_column = 3
 
 def GetLastWorkingDir():
     return r'/home/damir/PycharmProjects/data'
+
+interpolation_type = ('linear:simple linear connect from point to point. Linear ignore the index and treat the values as equally spaced',
+                      'time:interpolation works on daily and higher resolution data to interpolate given length of interval',
+                      'index:use the actual numerical values of the index',
+                      'values:use the actual numerical values of the index'
+                      'nearest:?',
+                      'zero:spline interpolation of zeroth order',
+                      'slinear:spline interpolation of first order',
+                      'quadratic:spline interpolation of second order',
+                      'cubic:spline interpolation of third order',
+                      #'barycentric:? https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.BarycentricInterpolator.html',
+                      #'polynomial:? https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.BarycentricInterpolator.html',
+                      #'spline:? require that you also specify an order',
+                      'from_derivatives:Bernstein polynomial',
+                      'krogh:Interpolating polynomial for a set of points',
+                      'pchip:PCHIP 1-d monotonic cubic interpolation',
+                      'akima:The interpolation method by Akima uses a continuously differentiable sub-spline built from piecewise cubic polynomials. The resultant curve passes through the given data points and will appear smooth and natural',
+                      #'previous:simply return the previous value of the point',
+                      #'next:simply return the next value of the point',
+                      )
+interpolation_type = OrderedDict([s.split(':', maxsplit=1) for s in interpolation_type])
+
+class HEFillDialog(FillDialog):
+    #'spline interpolation of zeroth, first, second or third order'
+    def __init__(self, *args, **kwds):
+        super().__init__(*args, **kwds)
+        # add choises for interpolation
+        self.choice_intertype.AppendItems(list(interpolation_type.keys()))
+
+    def on_choice_intertype(self, event):
+        c = self.choice_intertype.GetStringSelection()
+        self.intertype_desc.SetLabelText(interpolation_type[c])
+
+    def on_cancel(self, event):
+        self.EndModal(wx.ID_CANCEL)
+
+    def on_add(self, event):
+        self.EndModal(wx.ID_OK)
 
 
 class HEMyDialogFakeData(MyDialogFakeData):
@@ -95,9 +134,9 @@ class HEMyDialogRMC(MyDialogRunningMeancentered):
         event.Skip()
 
 
-class HEdatashow_dialog(datashow_dialog):
-    def __init__(self, parent, df, **kwargs):
-        super().__init__(df, **kwargs)
+# class HEdatashow_dialog(datashow_dialog):
+#     def __init__(self, parent, df, **kwargs):
+#         super().__init__(df, **kwargs)
 
 
 class HEMyFrame(MyFrame, BusyFrame):
@@ -327,14 +366,26 @@ class HEMyFrame(MyFrame, BusyFrame):
         self.DATA.show_me_data(self.get_selected_tags())
 
     def on_show_btn(self, e):
-        # datadlg = HEdatashow_dialog(self, self.DATA.data)
-        # datadlg.Layout()
-        # datadlg.ShowModal()
         frame = MainFrame(self.DATA.data)
         frame.Show()
+        #self.on_show_btn_old(None)
 
     def on_fillna_btn(self, event):
-        self.DATA.fill_na_data()
+        # self.DATA.fill_na_data()
+        tags = self.get_selected_tags()
+        with HEFillDialog(parent=self) as FillDia:
+            assert isinstance(FillDia, HEFillDialog)
+            if FillDia.ShowModal() == wx.ID_CANCEL:
+                return  # the user changed their mind
+            method = FillDia.choice_intertype.GetStringSelection()
+            print("We are going to fill NaNs by %s" % method)
+
+            for tag in tags:
+                try:
+                    self.DATA.interpolate(tag, method)
+                except BadUserError as exp:
+                    wx.MessageBox("*** %s ***" % exp.args, "Bad user!",
+                                  wx.OK | wx.ICON_ERROR | wx.STAY_ON_TOP, self)
         self.update_table()
 
     def on_delete_selection_btn(self, event):
@@ -368,6 +419,7 @@ class HEMyFrame(MyFrame, BusyFrame):
 
         self.bitmap_button_fake.Enable(tags_selected)
         self.bitmap_button_show.Enable(tags_selected)
+        self.bitmap_button_show_timed.Enable(tags_selected)
         self.bitmap_button_clear_selection.Enable(tags_selected)
         self.bitmap_button_delete_selection.Enable(tags_selected)
 
