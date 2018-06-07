@@ -23,6 +23,7 @@ class TimedataPlot(wx.Panel):
         assert isinstance(df, pd.DataFrame)
         self.df = df
         self.selected_tags = []
+        self._selection_indexes = []
         wx.Panel.__init__(self, parent, *args, **kwargs)
 
         columns = list(df.columns)
@@ -52,12 +53,14 @@ class TimedataPlot(wx.Panel):
         with wx.MultiChoiceDialog(self, message="Select tags to show", caption='Select', choices=self.columns,
                                   style=wx.CHOICEDLG_STYLE, pos=wx.DefaultPosition) as choice_dlg:
             assert isinstance(choice_dlg, wx.MultiChoiceDialog)
+            choice_dlg.SetSelections(self._selection_indexes)
             if choice_dlg.ShowModal() == wx.ID_CANCEL:
                 return  # the user changed their mind
             print("User selected tags to show")
             #
             # [list_of_items[e] for e in list_of_indexes]
-            self.selected_tags = [self.columns[e] for e in choice_dlg.GetSelections()]
+            self._selection_indexes = choice_dlg.GetSelections()
+            self.selected_tags = [self.columns[e] for e in self._selection_indexes]
             print(self.selected_tags)
             self.redraw()
 
