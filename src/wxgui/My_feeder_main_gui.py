@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+import os
 
 import gettext
 import logging
 
 import wx
 
-from HEFeederFrame import HEFeederFrame
+from HEFeederFrame2 import HEFeederFrame
 from constants import *
 
 # Logging configuration
@@ -24,7 +25,7 @@ class App(wx.App):
         # Writing to stdout
         print("OnInit")
         # Creating the frame
-        self.frame = HEFeederFrame(parent=None, id=-1, title='Feeder')
+        self.frame = HEFeederFrame(parent=None)
         self.frame.Show()
         self.SetTopWindow(self.frame)
         # Writing to stderr
@@ -40,6 +41,7 @@ if __name__ == '__main__':
     # (1) Text redirection starts here
     # https://wxpython.org/Phoenix/docs/html/internationalization.html
     gettext.install("app")  # replace with the appropriate catalog name
+    print(os.getcwd())
     app = App(redirect=False)
     print("before MainLoop")
     logging.debug("Logging via logging")
