@@ -26,47 +26,14 @@ MINVALUE_column = 1
 MAXVALUE_column = 2
 NaN_column = 3
 
+txt_and_csv_wildcard = "SCADA txt files (*.txt)|*.txt|" \
+           "CSV files (*.csv)|*.csv"
+
+#_("txt files (*.txt)|*.txt")
+
 
 def GetLastWorkingDir():
     return r'/home/damir/PycharmProjects/data'
-
-interpolation_type = ('linear:simple linear connect from point to point. Linear ignore the index and treat the values as equally spaced',
-                      'time:interpolation works on daily and higher resolution data to interpolate given length of interval',
-                      'index:use the actual numerical values of the index',
-                      'values:use the actual numerical values of the index'
-                      'nearest:?',
-                      'zero:spline interpolation of zeroth order',
-                      'slinear:spline interpolation of first order',
-                      'quadratic:spline interpolation of second order',
-                      'cubic:spline interpolation of third order',
-                      #'barycentric:? https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.BarycentricInterpolator.html',
-                      #'polynomial:? https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.BarycentricInterpolator.html',
-                      #'spline:? require that you also specify an order',
-                      'from_derivatives:Bernstein polynomial',
-                      'krogh:Interpolating polynomial for a set of points',
-                      'pchip:PCHIP 1-d monotonic cubic interpolation',
-                      'akima:The interpolation method by Akima uses a continuously differentiable sub-spline built from piecewise cubic polynomials. The resultant curve passes through the given data points and will appear smooth and natural',
-                      #'previous:simply return the previous value of the point',
-                      #'next:simply return the next value of the point',
-                      )
-interpolation_type = OrderedDict([s.split(':', maxsplit=1) for s in interpolation_type])
-
-class HEFillDialog(FillDialog):
-    #'spline interpolation of zeroth, first, second or third order'
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
-        # add choises for interpolation
-        self.choice_intertype.AppendItems(list(interpolation_type.keys()))
-
-    def on_choice_intertype(self, event):
-        c = self.choice_intertype.GetStringSelection()
-        self.intertype_desc.SetLabelText(interpolation_type[c])
-
-    def on_cancel(self, event):
-        self.EndModal(wx.ID_CANCEL)
-
-    def on_add(self, event):
-        self.EndModal(wx.ID_OK)
 
 
 class HEMyDialogFakeData(MyDialogFakeData):
@@ -78,6 +45,7 @@ class HEMyDialogFakeData(MyDialogFakeData):
 
 
 class HEMyDialog(MyDialog):
+    """func parametr"""
     def __init__(self, *args, **kwds):
         super().__init__(*args, **kwds)
         # added fraction of shift value
@@ -132,11 +100,6 @@ class HEMyDialogRMC(MyDialogRunningMeancentered):
         if ostatok:
             self.spin_ctrl_windowsize.SetValue(entered_window_size - ostatok)
         event.Skip()
-
-
-# class HEdatashow_dialog(datashow_dialog):
-#     def __init__(self, parent, df, **kwargs):
-#         super().__init__(df, **kwargs)
 
 
 class HEMyFrame(MyFrame, BusyFrame):
@@ -212,7 +175,7 @@ class HEMyFrame(MyFrame, BusyFrame):
             os.chdir(os.path.split(self.pathname)[0])
 
         # ask the user what new file to open
-        with wx.FileDialog(self, _("Open txt data file"), wildcard=_("txt files (*.txt)|*.txt"),
+        with wx.FileDialog(self, _("Open txt or csv data file"), wildcard=txt_and_csv_wildcard,
                            defaultDir=os.path.basename(self.pathname),
                            style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
             if fileDialog.ShowModal() == wx.ID_CANCEL:
@@ -303,10 +266,17 @@ class HEMyFrame(MyFrame, BusyFrame):
         self.choice_derivative.Enable(True)
 
     def doImportData(self, pathname):
-        logging.info('Load file <<%s>>' % pathname)
-        self.busy = _("Import data from <%s>" % pathname)
-        self.DATA.import_data_from_csv(pathname)
-        self.busy = False
+        """В зависимости от типа выбранного файла вызывает соответствующую функцию импорта"""
+        if os.path.splitext(pathname)[1] == '.txt':
+            logging.info('Load TXT file <<%s>>' % pathname)
+            self.busy = _("Import data from SCADA TXT file <%s>" % pathname)
+            self.DATA.import_data_from_csv(pathname)
+            self.busy = False
+        elif os.path.splitext(pathname)[1] == '.csv':
+            logging.info('Load CSV file <<%s>>' % pathname)
+            self.busy = _("Import data CSV file <%s>" % pathname)
+            self.DATA.import_data_from_real_csv(pathname)
+            self.busy = False
         self.update_table()
 
     def update_table(self):

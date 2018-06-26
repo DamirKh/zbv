@@ -58,9 +58,14 @@ def parse_date(_data_string):
 
 
 def parse_tag(tag_string):
-    """_:type """
+    """ returns center part of tag name. i.e. if tag_string analog.P0034SB_PT0004_PV.curval
+     function returns P0034SB_PT0004_PV"""
     # tagname found analog.P0034SB_PT0004_PV.curval
-    return tag_string.split('.', maxsplit=2)[1]
+    try:
+        center_name = tag_string.split('.', maxsplit=2)[1]
+    except IndexError:
+        center_name = tag_string
+    return center_name
 
 
 def running_mean(l, N):
@@ -164,6 +169,26 @@ class ScadaDataFile(object):
         self._not_saved = True
         self.ss_data_present = True
 
+    def import_data_from_real_csv(self, path_to_file, callback_func=None):
+        """This method is for import data from csv file, like from Siemens turbine"""
+        if not os.path.exists(path_to_file):
+            logging.error('File not exist! <<%s>>' % path_to_file)
+            raise FileNotFoundError
+        self.callback_func = callback_func
+
+        self.config['freq'] = ''
+        self.config['freq in Secs'] = 0
+
+        mesivo = pd.read_csv(path_to_file)
+
+        if not self.ss_data_present:
+            self.data = mesivo
+        else:
+            print('Data merge not implemented. \n   All data replaced!')
+            self.data = mesivo
+        self._not_saved = True
+        self.ss_data_present = True
+
     def fill_na_data(self):
         if not self.ss_data_present:
             return
@@ -244,6 +269,7 @@ class ScadaDataFile(object):
         self.ss_data_present = True
 
     def show_me_data(self, tag_names=None, reduced=False):
+        # simple and dirty
         # plt.figure()
         if reduced:
             reduced_sample_rate = '%iS' % self.config['freq in Secs'] * 60
