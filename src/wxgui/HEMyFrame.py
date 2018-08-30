@@ -10,6 +10,7 @@ from glade_gui.LayerConfDlg import LayerConfDlg as MyFrame
 
 
 class HEMyFrame(MyFrame):
+    """Modal window to configure layers"""
     def __init__(self, layer_config, *args, **kwargs):
         assert isinstance(layer_config, layers_opt.CommonLayerConfig)
         super().__init__(*args, **kwargs)
