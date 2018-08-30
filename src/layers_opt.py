@@ -244,7 +244,7 @@ def initializer_any(choice=None, initializer_of=''):
 
 
 class CommonLayerConfig(object):
-    def __init__(self, name="Strange layer", config_dict=OrderedDict()):
+    def __init__(self, name="Strange layer (if You see it - that's an application error)", config_dict=OrderedDict()):
         self.config_dict = config_dict
         self.name = name
         self.touch()
@@ -298,10 +298,10 @@ class DenseLayerConfig(CommonLayerConfig):
     def __init__(self, number=None, **kwargs):
         self.www = r"https://keras.io/layers/core/#dense"
         config = OrderedDict([
-            ('units', num_of_units_any(**kwargs)),
-            ('activation', layer_activation_any(choice='relu')),
-            ('use_bias' , use_bias_any(True)),
-            ('kernel_initializer', initializer_any(choice='glorot_uniform', initializer_of="Kernel's"))
+            (UNITS, num_of_units_any(**kwargs)),
+            (ACTIVATION, layer_activation_any(choice='relu')),
+            (USE_BIAS , use_bias_any(True)),
+            (KERNEL_INITIALIZER, initializer_any(choice='glorot_uniform', initializer_of="Kernel's"))
         ])
         number = '' if (number is None) else ' #%i'%number
         super().__init__(name='Dense Layer%s'%number, config_dict=config)
