@@ -19,6 +19,7 @@ import data_reader
 from BusyFrame import BusyFrame
 #from dxdfgui import ScatterPlot
 from dxdfgui import MainFrame
+from my_sin_signal import MyDialog1 as My_SIN_dlg
 
 # DATA = data_reader.ScadaDataFile()
 TAG_column = 0
@@ -34,6 +35,10 @@ txt_and_csv_wildcard = "SCADA txt files (*.txt)|*.txt|" \
 
 def GetLastWorkingDir():
     return r'/home/damir/PycharmProjects/data'
+
+
+class HEMy_SIN_dialog(My_SIN_dlg):
+    pass
 
 
 class HEMyDialogFakeData(MyDialogFakeData):
@@ -295,12 +300,18 @@ class HEMyFrame(MyFrame, BusyFrame):
             G.AutoSizeColumn(TAG_column)
 
             G.SetCellEditor(idx, MINVALUE_column, gridlib.GridCellFloatEditor())
-            G.SetCellValue(idx, MINVALUE_column, '%.7f' % self.DATA.tag_min(tag))
+            try:
+                G.SetCellValue(idx, MINVALUE_column, '%.7f' % float(self.DATA.tag_min(tag)))
+            except ValueError:
+                G.SetCellValue(idx, MINVALUE_column, '-')
             G.SetCellAlignment(idx, MINVALUE_column, wx.ALIGN_RIGHT, wx.ALIGN_CENTER)
             G.AutoSizeColumn(MINVALUE_column)
 
             G.SetCellEditor(idx, MAXVALUE_column, gridlib.GridCellFloatEditor())
-            G.SetCellValue(idx, MAXVALUE_column, '%.7f' % self.DATA.tag_max(tag))
+            try:
+                G.SetCellValue(idx, MAXVALUE_column, '%.7f' % float(self.DATA.tag_max(tag)))
+            except ValueError:
+                G.SetCellValue(idx, MAXVALUE_column, '-' )
             G.SetCellAlignment(idx, MAXVALUE_column, wx.ALIGN_RIGHT, wx.ALIGN_CENTER)
             G.AutoSizeColumn(MAXVALUE_column)
 
@@ -341,21 +352,7 @@ class HEMyFrame(MyFrame, BusyFrame):
         #self.on_show_btn_old(None)
 
     def on_fillna_btn(self, event):
-        # self.DATA.fill_na_data()
-        tags = self.get_selected_tags()
-        with HEFillDialog(parent=self) as FillDia:
-            assert isinstance(FillDia, HEFillDialog)
-            if FillDia.ShowModal() == wx.ID_CANCEL:
-                return  # the user changed their mind
-            method = FillDia.choice_intertype.GetStringSelection()
-            print("We are going to fill NaNs by %s" % method)
-
-            for tag in tags:
-                try:
-                    self.DATA.interpolate(tag, method)
-                except BadUserError as exp:
-                    wx.MessageBox("*** %s ***" % exp.args, "Bad user!",
-                                  wx.OK | wx.ICON_ERROR | wx.STAY_ON_TOP, self)
+        self.DATA.fill_na_data()
         self.update_table()
 
     def on_delete_selection_btn(self, event):
@@ -458,6 +455,14 @@ class HEMyFrame(MyFrame, BusyFrame):
                 # self.label_filename.SetLabelText(os.path.split(pathname)[1])
             except IOError:
                 wx.LogError("Cannot export data in to excel file '%s'." % pathname)
+
+    def on_add_signal_btn(self, event):
+        with HEMy_SIN_dialog(parent=self) as SIN_Dialog:
+            assert isinstance(SIN_Dialog, HEMy_SIN_dialog)
+            if SIN_Dialog.ShowModal() == wx.ID_CANCEL:
+                return  # the user changed their mind
+            print("Here we addsinus!")
+
 
     def ad_dydt(self):
         """Derivative (dy/dt)"""
