@@ -134,7 +134,7 @@ class ScadaDataFile(object):
                     # VerboseFunc("Start ", self.time_start)
                 if dt > time_stop:  # found time later then stop time
                     time_stop = dt
-        # End of first rollover. Find Tags and calculate time
+        # End of first rollover. Tags found and time calculated.
 
         f.seek(0)
         current_tag = None
@@ -179,7 +179,7 @@ class ScadaDataFile(object):
         self.config['freq'] = ''
         self.config['freq in Secs'] = 0
 
-        mesivo = pd.read_csv(path_to_file)
+        mesivo = pd.read_csv(path_to_file, skiprows=1, index_col=0, parse_dates=True)
 
         if not self.ss_data_present:
             self.data = mesivo
@@ -321,12 +321,18 @@ class ScadaDataFile(object):
 
     def tag_min(self, tagname):
         """Returns minimum value of given tag from mesivo"""
-        Min = self.data[tagname].min()
+        try:
+            Min = self.data[tagname].min()
+        except ValueError:
+            Min = 0.
         return Min
 
     def tag_max(self, tagname):
         """Returns maximum value of given tag from mesivo"""
-        Max = self.data[tagname].max()
+        try:
+            Max = self.data[tagname].max()
+        except ValueError:
+            Max = 0.
         return Max
 
     def get_tag(self, tagname):
