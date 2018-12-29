@@ -3,6 +3,9 @@ from collections import OrderedDict
 import wx.propgrid as wxpg
 import wx
 
+# https://pypubsub.readthedocs.io/en/v4.0.0/usage/usage_advanced_maintain.html#specify-topic-tree-def
+from wx.lib.pubsub import pub
+import topic_def
 
 import layers_opt
 #from glade_gui.MyFrame import MyFrame
@@ -24,6 +27,11 @@ class HEMyFrame(MyFrame):
         self.wxprop_layerconf_pair = OrderedDict()  # wx object to layer property config connectivity
         self.fill_property_grid()
         # self.Bind(wx.EVT_CLOSE, self.OnClose)
+        pub.subscribe(self.msg_recivier_tester, topic_def._zbv_data )
+
+    def msg_recivier_tester(self, msg=''):
+        print("*"*10 + msg)
+        wx.LogMessage(msg)
 
     def fill_property_grid(self):
         print('Filling property grid')

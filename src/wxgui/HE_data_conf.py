@@ -1,6 +1,7 @@
-# hand edited data configurator
+# hand edited data configurator GUI
 # import pickle
 import wx
+from wx.lib.pubsub import pub
 import wx.grid as gridlib
 import os.path
 import datetime
@@ -11,9 +12,14 @@ from collections import OrderedDict
 from constants import *
 from MyExceptions import BadUserError
 
-from glade_gui.data_conf import MyFrame, MyDialog, \
-    MyDialogRunningMean, MyDownsampleDlg, \
-    MyDialogRunningMeancentered, MyDialogFakeData, FillDialog
+from glade_gui.data_conf import \
+    MyFrame, \
+    MyDialog, \
+    MyDialogRunningMean, \
+    MyDownsampleDlg, \
+    MyDialogRunningMeancentered, \
+    MyDialogFakeData, \
+    FillDialog
 from constants import *
 import data_reader
 from BusyFrame import BusyFrame
@@ -108,11 +114,13 @@ class HEMyDialogRMC(MyDialogRunningMeancentered):
 
 
 class HEMyFrame(MyFrame, BusyFrame):
+    '''Data configurator main window'''
     def __init__(self, *args, **kwargs):
         self.DATA = data_reader.ScadaDataFile()
         super().__init__(*args, **kwargs)
-        # self.ss_contentNotSaved = False
+        # File path to loaded data
         self.ss_input_data_pathname = None
+        # Available derivatives math methods
         self.ad = self.ad_dydt, \
                   self.ad_shift, \
                   self.ad_normalise, \
@@ -123,12 +131,13 @@ class HEMyFrame(MyFrame, BusyFrame):
                   self.ad_abs
 
         self.choice_derivative.Clear()
-        print([i.__doc__ for i in self.ad])
+        # print([i.__doc__ for i in self.ad])
         self.choice_derivative.AppendItems([i.__doc__ for i in self.ad])
         self.choice_derivative.Select(wx.NOT_FOUND)
         self.pathname = GetLastWorkingDir()
         self.ss_prev_rm_window_size = None
 
+    # todo must be deleted to confirm MVC
     @property
     def ss_contentNotSaved(self):
         return not self.DATA.ss_data_saved
@@ -145,14 +154,15 @@ class HEMyFrame(MyFrame, BusyFrame):
         elif os.path.isfile(self.pathname):
             os.chdir(os.path.split(self.pathname)[0])
 
-        # ask the user what xlsx file to open
+        # ask the user which xlsx file to open
         with wx.FileDialog(self, _("Import excel data file"), wildcard=XLSX_WILDCARD,
-                           defaultDir=os.path.basename(self.pathname),
+                           defaultDir=self.pathname if os.path.isdir(self.pathname) else os.path.basename(self.pathname),
                            style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return  # the user changed their mind
             # Proceed loading the file chosen by the user
             self.pathname = pathname = fileDialog.GetPath()
+
             try:
                 # disableAll = wx.WindowDisabler()
                 # self.wait = BusyInfo("Please wait, \nImport excel data file <<%s>>" % pathname, parent=self)

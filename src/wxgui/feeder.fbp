@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <wxFormBuilder_Project>
-    <FileVersion major="1" minor="13" />
+    <FileVersion major="1" minor="15" />
     <object class="Project" expanded="1">
         <property name="class_decoration"></property>
         <property name="code_generation">Python</property>
@@ -54,41 +54,6 @@
             <property name="window_name"></property>
             <property name="window_style">wxTAB_TRAVERSAL</property>
             <property name="xrc_skip_sizer">1</property>
-            <event name="OnActivate"></event>
-            <event name="OnActivateApp"></event>
-            <event name="OnAuiFindManager"></event>
-            <event name="OnAuiPaneButton"></event>
-            <event name="OnAuiPaneClose"></event>
-            <event name="OnAuiPaneMaximize"></event>
-            <event name="OnAuiPaneRestore"></event>
-            <event name="OnAuiRender"></event>
-            <event name="OnChar"></event>
-            <event name="OnClose"></event>
-            <event name="OnEnterWindow"></event>
-            <event name="OnEraseBackground"></event>
-            <event name="OnHibernate"></event>
-            <event name="OnIconize"></event>
-            <event name="OnIdle"></event>
-            <event name="OnKeyDown"></event>
-            <event name="OnKeyUp"></event>
-            <event name="OnKillFocus"></event>
-            <event name="OnLeaveWindow"></event>
-            <event name="OnLeftDClick"></event>
-            <event name="OnLeftDown"></event>
-            <event name="OnLeftUp"></event>
-            <event name="OnMiddleDClick"></event>
-            <event name="OnMiddleDown"></event>
-            <event name="OnMiddleUp"></event>
-            <event name="OnMotion"></event>
-            <event name="OnMouseEvents"></event>
-            <event name="OnMouseWheel"></event>
-            <event name="OnPaint"></event>
-            <event name="OnRightDClick"></event>
-            <event name="OnRightDown"></event>
-            <event name="OnRightUp"></event>
-            <event name="OnSetFocus"></event>
-            <event name="OnSize"></event>
-            <event name="OnUpdateUI"></event>
             <object class="wxStatusBar" expanded="1">
                 <property name="bg"></property>
                 <property name="context_help"></property>
@@ -111,29 +76,6 @@
                 <property name="window_extra_style"></property>
                 <property name="window_name"></property>
                 <property name="window_style"></property>
-                <event name="OnChar"></event>
-                <event name="OnEnterWindow"></event>
-                <event name="OnEraseBackground"></event>
-                <event name="OnKeyDown"></event>
-                <event name="OnKeyUp"></event>
-                <event name="OnKillFocus"></event>
-                <event name="OnLeaveWindow"></event>
-                <event name="OnLeftDClick"></event>
-                <event name="OnLeftDown"></event>
-                <event name="OnLeftUp"></event>
-                <event name="OnMiddleDClick"></event>
-                <event name="OnMiddleDown"></event>
-                <event name="OnMiddleUp"></event>
-                <event name="OnMotion"></event>
-                <event name="OnMouseEvents"></event>
-                <event name="OnMouseWheel"></event>
-                <event name="OnPaint"></event>
-                <event name="OnRightDClick"></event>
-                <event name="OnRightDown"></event>
-                <event name="OnRightUp"></event>
-                <event name="OnSetFocus"></event>
-                <event name="OnSize"></event>
-                <event name="OnUpdateUI"></event>
             </object>
             <object class="wxBoxSizer" expanded="1">
                 <property name="minimum_size"></property>
@@ -200,31 +142,8 @@
                         <property name="window_extra_style"></property>
                         <property name="window_name"></property>
                         <property name="window_style"></property>
-                        <event name="OnChar"></event>
-                        <event name="OnEnterWindow"></event>
-                        <event name="OnEraseBackground"></event>
-                        <event name="OnKeyDown"></event>
-                        <event name="OnKeyUp"></event>
-                        <event name="OnKillFocus"></event>
-                        <event name="OnLeaveWindow"></event>
-                        <event name="OnLeftDClick"></event>
-                        <event name="OnLeftDown"></event>
-                        <event name="OnLeftUp"></event>
-                        <event name="OnMiddleDClick"></event>
-                        <event name="OnMiddleDown"></event>
-                        <event name="OnMiddleUp"></event>
-                        <event name="OnMotion"></event>
-                        <event name="OnMouseEvents"></event>
-                        <event name="OnMouseWheel"></event>
-                        <event name="OnPaint"></event>
-                        <event name="OnRightDClick"></event>
-                        <event name="OnRightDown"></event>
-                        <event name="OnRightUp"></event>
-                        <event name="OnSetFocus"></event>
-                        <event name="OnSize"></event>
-                        <event name="OnUpdateUI"></event>
                         <object class="tool" expanded="0">
-                            <property name="bitmap">Load From Embedded File; glade_gui/icons/inbox_upload.png</property>
+                            <property name="bitmap">Load From XRC; load_button_image</property>
                             <property name="context_menu">0</property>
                             <property name="id">wxID_ANY</property>
                             <property name="kind">wxITEM_NORMAL</property>
@@ -233,16 +152,7 @@
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
                             <property name="tooltip">Load data</property>
-                            <event name="OnAuiToolBarBeginDrag"></event>
-                            <event name="OnAuiToolBarMiddleClick"></event>
-                            <event name="OnAuiToolBarOverflowClick"></event>
-                            <event name="OnAuiToolBarRightClick"></event>
-                            <event name="OnAuiToolBarToolDropDown"></event>
-                            <event name="OnMenuSelection"></event>
                             <event name="OnToolClicked">on_load_data_btn</event>
-                            <event name="OnToolEnter"></event>
-                            <event name="OnToolRClicked"></event>
-                            <event name="OnUpdateUI"></event>
                         </object>
                         <object class="tool" expanded="0">
                             <property name="bitmap">Load From File; glade_gui/icons/chart_curve.png</property>
@@ -254,16 +164,7 @@
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
                             <property name="tooltip">Quick show data</property>
-                            <event name="OnAuiToolBarBeginDrag"></event>
-                            <event name="OnAuiToolBarMiddleClick"></event>
-                            <event name="OnAuiToolBarOverflowClick"></event>
-                            <event name="OnAuiToolBarRightClick"></event>
-                            <event name="OnAuiToolBarToolDropDown"></event>
-                            <event name="OnMenuSelection"></event>
                             <event name="OnToolClicked">on_show_btn</event>
-                            <event name="OnToolEnter"></event>
-                            <event name="OnToolRClicked"></event>
-                            <event name="OnUpdateUI"></event>
                         </object>
                         <object class="tool" expanded="1">
                             <property name="bitmap">Load From File; glade_gui/icons/emotion_surrender.png</property>
@@ -275,16 +176,7 @@
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
                             <property name="tooltip">Load Model</property>
-                            <event name="OnAuiToolBarBeginDrag"></event>
-                            <event name="OnAuiToolBarMiddleClick"></event>
-                            <event name="OnAuiToolBarOverflowClick"></event>
-                            <event name="OnAuiToolBarRightClick"></event>
-                            <event name="OnAuiToolBarToolDropDown"></event>
-                            <event name="OnMenuSelection"></event>
                             <event name="OnToolClicked">on_btn_openmodel</event>
-                            <event name="OnToolEnter"></event>
-                            <event name="OnToolRClicked"></event>
-                            <event name="OnUpdateUI"></event>
                         </object>
                         <object class="tool" expanded="1">
                             <property name="bitmap">Load From File; glade_gui/icons/emotion_gourmand_big.png</property>
@@ -296,16 +188,7 @@
                             <property name="permission">protected</property>
                             <property name="statusbar"></property>
                             <property name="tooltip">Feed and fit</property>
-                            <event name="OnAuiToolBarBeginDrag"></event>
-                            <event name="OnAuiToolBarMiddleClick"></event>
-                            <event name="OnAuiToolBarOverflowClick"></event>
-                            <event name="OnAuiToolBarRightClick"></event>
-                            <event name="OnAuiToolBarToolDropDown"></event>
-                            <event name="OnMenuSelection"></event>
                             <event name="OnToolClicked">on_btn_fit</event>
-                            <event name="OnToolEnter"></event>
-                            <event name="OnToolRClicked"></event>
-                            <event name="OnUpdateUI"></event>
                         </object>
                     </object>
                 </object>

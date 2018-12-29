@@ -5,7 +5,16 @@ import logging
 import os
 import pickle
 
+# https://pypubsub.readthedocs.io/en/v4.0.0/usage/usage_advanced_maintain.html#specify-topic-tree-def
+from wx.lib.pubsub import pub
+import topic_def
+
+pub.addTopicDefnProvider(topic_def, pub.TOPIC_TREE_FROM_CLASS)
+pub.setTopicUnspecifiedFatal(True)
+# print(pub.exportTopicTreeSpec()) unusable while message really go via te pubsub
+
 import matplotlib
+
 matplotlib.use('WXAgg')
 import matplotlib.pyplot as plt
 
@@ -16,6 +25,7 @@ import h5py  # HDF5 support
 from config_case import NORMALISE_DICT
 from constants import HIDDEN_DATA
 from MyExceptions import BadUserError
+
 # from scipy import interpolate
 
 __ver__ = 1.1
@@ -101,6 +111,7 @@ class ScadaDataFile(object):
         self.ss_data_present = False
         self.ss_filled = False
         self._not_saved = False
+        pub.sendMessage(topic_def._zbv_data, msg="SCADA data fileobject inited")
 
     @property
     def ss_data_saved(self):

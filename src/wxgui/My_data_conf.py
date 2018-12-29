@@ -5,7 +5,7 @@ import logging
 
 import wx
 
-from HE_data_conf import HEMyFrame
+from HE_data_conf import HEMyFrame  # основной гуй программы подготовки данных
 
 # Logging configuration
 logging.basicConfig(filename='data_conf.log',

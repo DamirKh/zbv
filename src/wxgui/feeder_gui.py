@@ -28,7 +28,7 @@ class FeederFrame ( wx.Frame ):
         bSizer1 = wx.BoxSizer( wx.VERTICAL )
         
         self.m_toolBar1 = wx.ToolBar( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TB_HORIZONTAL ) 
-        self.bitmap_button_load = self.m_toolBar1.AddLabelTool( wx.ID_ANY, _(u"Load data"), wx.Bitmap( u"glade_gui/icons/inbox_upload.png", wx.BITMAP_TYPE_ANY ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Load data"), wx.EmptyString, None ) 
+        self.bitmap_button_load = self.m_toolBar1.AddLabelTool( wx.ID_ANY, _(u"Load data"), wx.ArtProvider.GetBitmap( wx.ART_FOLDER_OPEN,  ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Load data"), wx.EmptyString, None ) 
         
         self.bitmap_button_show = self.m_toolBar1.AddLabelTool( wx.ID_ANY, _(u"Quick show data"), wx.Bitmap( u"glade_gui/icons/chart_curve.png", wx.BITMAP_TYPE_ANY ), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Quick show data"), wx.EmptyString, None ) 
         
